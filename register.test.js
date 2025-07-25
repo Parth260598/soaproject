@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('./server'); // ✅ correct
+const app = require('./server'); // 
 
 describe('POST /users/register', () => {
   it('should register a new user', async () => {
