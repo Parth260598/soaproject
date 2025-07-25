@@ -6,22 +6,29 @@ const routes = require('./routes');
 
 const app = express();
 
+// ✅ Ensure 'logs' directory exists before writing
+const logDir = path.join(__dirname, 'logs');
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
+
 // 🔧 Create a write stream (in append mode)
 const accessLogStream = fs.createWriteStream(
-  path.join(__dirname, 'logs', 'access.log'),
+  path.join(logDir, 'access.log'),
   { flags: 'a' }
 );
 
-// 📋 Log to console and also to file
+// 📋 Log to file and console
 app.use(morgan('combined', { stream: accessLogStream }));
-app.use(morgan('dev')); // Optional: also log to console for dev
+app.use(morgan('dev')); // Optional: log to console for development
 
 app.use(express.json());
 app.use('/', routes);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-module.exports = app;
+module.exports = app; // ✅ Export app for testing
+
